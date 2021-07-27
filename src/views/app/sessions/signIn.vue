@@ -8,15 +8,15 @@
         <div class="row">
           <div class="col-md-6">
             <div class="p-4">
-              <div class="auth-logo text-center mb-30 c-pointer">
-                <img :src="logo" @click="$router.push('/')" />
+              <div class="auth-logo text-center mb-30">
+                <img :src="logo" />
               </div>
               <h1 class="mb-3 text-18">Sign In</h1>
               <b-form @submit.prevent="formSubmit">
                 <b-form-group label="Email Address" class="text-12">
                   <b-form-input
                     class="form-control-rounded"
-                    type="text"
+                    type="email"
                     v-model="email"
                     email
                     required
@@ -56,11 +56,11 @@
                 >
               </b-form>
 
-              <div class="mt-3 text-center">
+              <!-- <div class="mt-3 text-center">
                 <router-link to="forgot" tag="a" class="text-muted">
                   <u>Forgot Password?</u>
                 </router-link>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -85,7 +85,7 @@
               >
                 <i class="i-Mail-with-At-Sign"></i> Sign up with Email
               </router-link>
-              <a
+              <!-- <a
                 class="
                   btn
                   btn-rounded
@@ -108,7 +108,7 @@
                 "
               >
                 <i class="i-Facebook-2"></i> Sign up with Facebook
-              </a>
+              </a> -->
             </div>
           </b-col>
         </div>
@@ -117,6 +117,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapGetters, mapActions } from "vuex";
 import { signIn } from "./APICalls";
 export default {
@@ -145,41 +146,41 @@ export default {
   methods: {
     ...mapActions(["login", "setUser"]),
     formSubmit() {
-      if (this.email === "devin@gmail.com" && this.password === "devin@123") {
-        const userInfo = {
-          authenticatedUser: { id: "123", name: "Devin" },
-        };
-        localStorage.setItem("userInfo", JSON.stringify(userInfo)); // store the token in localstorage
-        setTimeout(() => {
-          this.$router.push("/app/delta-dental");
-          this.makeToast("success", "Login successfully!");
-        }, 1000);
-      } else {
-        this.makeToast("danger", "Invalid login credentials");
-      }
-      // signIn({ email: this.email, password: this.password })
-      //   .then((resp) => {
-      //     console.log(`resp signin`, resp);
-      //     if (resp && resp.status === 200) {
-      //       this.setUser(resp.data.authenticatedUser);
-      //       const userInfo = {
-      //         access: resp.data.access,
-      //         refresh: resp.data.refresh,
-      //         authenticatedUser: resp.data.authenticatedUser,
-      //       };
-      //       localStorage.setItem("userInfo", JSON.stringify(userInfo)); // store the token in localstorage
-      //       setTimeout(() => {
-      //         this.$router.push("/app/delta-dental");
-      //         this.makeToast("success", resp.data.message);
-      //       }, 1000);
-      //     } else {
-      //       this.makeToast("danger", "Invalid login credentials");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     this.makeToast("danger", "Invalid login credentials");
-      //     localStorage.removeItem("userInfo"); // if the request fails, remove any possible user token if possible
-      //   });
+      if (!this.checkEmailDomain(this.email))
+        return this.makeToast("danger", "Invalid login credentials");
+
+      // this.login({ email: this.email, password: this.password });
+
+      signIn({ email: this.email, password: this.password })
+        .then((resp) => {
+          if (resp && resp.status === 200) {
+            this.setUser(resp.data);
+            const userInfo = { ...resp.data };
+            localStorage.setItem("userInfo", JSON.stringify(userInfo)); // store the token in localstorage
+
+            axios.defaults.headers.common["Authorization"] =
+              "JWT " + userInfo.access;
+          }
+        })
+        .catch((error) => {
+          // console.log('error: ', error.response.data);
+
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          )
+            this.makeToast("danger", error.response.data.message);
+
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.non_field_errors
+          )
+            this.makeToast("danger", error.response.data.non_field_errors);
+
+          localStorage.removeItem("userInfo"); // if the request fails, remove any possible user token if possible
+        });
     },
     makeToast(variant = null, msg) {
       this.$bvToast.toast(msg, {
@@ -187,6 +188,16 @@ export default {
         variant: variant,
         solid: true,
       });
+    },
+    checkEmailDomain(email) {
+      if (
+        process.env.VUE_APP_ALLOWED_DOMAINS.split(",").includes(
+          email.split("@")[1]
+        )
+      )
+        return true;
+
+      return false;
     },
   },
   watch: {

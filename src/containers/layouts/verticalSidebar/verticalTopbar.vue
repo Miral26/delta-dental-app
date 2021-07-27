@@ -7,81 +7,41 @@
         <div></div>
       </div>
 
-      <!-- <div
-        :class="{ show: isMegaMenuOpen }"
-        class="dropdown mega-menu d-none d-md-block"
-        v-on-clickaway="closeMegaMenu"
-      >
-        <a
-          href="#"
-          class="btn text-muted dropdown-toggle mr-3"
-          id="dropdownMegaMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          @click="toggleMegaMenu"
-          ><i class="fa fa-cog"></i
-        ></a>
-
-        <div
-          class="dropdown-menu text-left"
-          :class="{ show: isMegaMenuOpen }"
-          aria-labelledby="dropdownMenuButton"
-        >
-          <div class="row m-0">
-            <div class="p-4 text-left">
-              <div class="menu-icon-grid w-auto p-0">
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-
       <div class="header-toggle">
-        <div class="search-bar">
+        <!-- <div class="search-bar">
           <i class="search-icon text-muted i-Magnifi-Glass1"></i>
           <input
             type="text"
             placeholder="Search a Patient"
-            @input="searchPatient"
-            v-model="searchPatientText"
-            v-on-clickaway="resetSearchText"
+            v-model="headerSearch"
           />
-          <div class="search-patient-dropdown" v-if="searchPatientText">
-            <ul>
-              <li v-for="(patient, index) in searchPatients" :key="index">
-                <div class="search-patient-info">
-                  <div class="search-patient-name">
-                    <h5>{{ patient.first_name }} {{ patient.last_name }}</h5>
-                  </div>
-                  <div class="search-patient-detail">
-                    <span>9876543210</span>
-                    <span>12/3/2021</span>
-                  </div>
-                </div>
-              </li>
-              <li class="p-3 text-center" v-if="!searchPatients.length">
-                No record found
-              </li>
-            </ul>
-          </div>
-        </div>
+        </div> -->
 
         <!-- Header Icons -->
         <div class="d-flex">
-          <i
-            class="i-File-Clipboard-File--Text cursor-pointer header-icon d-none d-sm-inline-block font-weight-bold"
+          <!-- <i
+            class="
+              i-File-Clipboard-File--Text
+              cursor-pointer
+              header-icon
+              d-none d-sm-inline-block
+              font-weight-bold
+            "
             @click="openAppointmentModal"
             v-b-popover.hover.bottom="'Add Appointment'"
           >
-          </i>
-          <i
-            class="i-Add-User cursor-pointer header-icon d-none d-sm-inline-block font-weight-bold"
+          </i> -->
+          <!-- <i
+            class="
+              i-Add-User
+              cursor-pointer
+              header-icon
+              d-none d-sm-inline-block
+              font-weight-bold
+            "
             v-b-popover.hover.bottom="'Add Patient'"
-            @click="openNewPatientModal"
           >
-          </i>
+          </i> -->
           <!-- <i
             class="i-Magnifi-Glass- cursor-pointer header-icon d-none d-sm-inline-block font-weight-bold"
             v-b-popover.hover.bottom="'Advanced Patient Search'"
@@ -91,17 +51,6 @@
       </div>
 
       <div class="header-part-right">
-        <!-- <b-form-datepicker
-          :date-format-options="{
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-          }"
-          id="example-datepicker"
-          v-model="selectedDate"
-          class="datepicker-input"
-        ></b-form-datepicker> -->
-
         <div class="dropdown location">
           <b-dropdown
             id="dropdown"
@@ -120,12 +69,18 @@
                 aria-expanded="false"
               ></i>
               <span
-                class="text-decoration-none text-14 cursor-pointer"
+                class="text-14 cursor-pointer truncate d-inline-block text-left"
                 style="text-decoration: none"
               >
-                {{ cloudBase.clinic ? cloudBase.clinic : "Cloud Based..." }}
+                {{ getSelectedLocation && getSelectedLocation.name }}
                 <i
-                  class="i-Arrow-Down text-20 cursor-pointer header-icon d-sm-inline-block"
+                  class="
+                    i-Arrow-Down
+                    text-20
+                    cursor-pointer
+                    header-icon
+                    d-sm-inline-block
+                  "
                   v-b-popover.hover.bottom="'Client - Location'"
                 >
                 </i>
@@ -137,9 +92,11 @@
                   <div class="form-group">
                     <b-form-select
                       id="input-3"
-                      v-model="cloudBase.clinic"
-                      :options="cloudBase.clinics"
+                      v-model="location"
+                      :options="getLocations"
                       required
+                      value-field="id"
+                      text-field="name"
                     >
                     </b-form-select>
                   </div>
@@ -148,47 +105,37 @@
             </div>
           </b-dropdown>
         </div>
-        <div
-          :class="{ show: isMegaMenuOpen }"
-          class="dropdown mega-menu d-none d-md-block"
-          v-on-clickaway="closeMegaMenu"
-        >
-          <a
-            href="#"
-            class="btn text-muted dropdown-toggle mr-3"
-            id="dropdownMegaMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            @click="toggleMegaMenu"
-            ><i class="fa fa-cog"></i
-          ></a>
-          <div
-            class="dropdown-menu text-left"
-            :class="{ show: isMegaMenuOpen }"
-            aria-labelledby="dropdownMegaMenuButton"
+
+        <a class="o-hidden d-inline-block">
+          <b-button
+            size="sm"
+            class="btn-radius ml-2"
+            variant="primary"
+            @click="
+              confirmationPopup().then((result) => {
+                if (result.value) runCron();
+              })
+            "
+            >Run daily job</b-button
           >
-            <div class="p-4 text-left">
-              <div class="menu-icon-grid w-auto p-0">
-                <a
-                  href="#"
-                  @click="$router.push(option.route)"
-                  v-for="option in megaMenuOptions"
-                  :key="option.id"
-                >
-                  <i :class="option.icon"></i> {{ option.title }}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+        </a>
+
+        <!-- <a
+          v-b-tooltip.hover
+          class="d-flex ml-2 p-2 rounded c-pointer"
+          title="Run Daily Job"
+          style="background-color: #e5f4f8; color: #00c5b4"
+        >
+          <i
+            class="i-Restore-Window text-20"
+            @click="
+              confirmationPopup().then((result) => {
+                if (result.value) runCron();
+              })
+            "
+          ></i>
+        </a> -->
       </div>
-
-      <b-modal id="new-appointment" size="xl">
-        <NewAppointment />
-      </b-modal>
-
-      <PatientInfoPanel />
     </header>
   </div>
 </template>
@@ -197,24 +144,24 @@ import { mapGetters, mapActions } from "vuex";
 import * as moment from "moment";
 import { mixin as clickaway } from "vue-clickaway";
 import Util from "@/utils";
-import NewAppointment from "../../../components/new-appointent/new-appointment";
-import PatientInfoPanel from "../../../components/patient-info-panel/patient-info-panel.vue";
+import axios from "axios";
 
 export default {
   mixins: [clickaway],
-  components: { NewAppointment, PatientInfoPanel },
   computed: {
     ...mapGetters([
       "getVerticalCompact",
       "getVerticalSidebar",
       "getSideBarToggleProperties",
-      "getPatientsList",
+      "getLocations",
+      "getSelectedLocation",
     ]),
   },
   data() {
     return {
+      isloading: false,
+      location: null,
       isMegaMenuOpen: false,
-      patientsList: [],
       megaMenuOptions: [
         {
           id: 1,
@@ -252,25 +199,13 @@ export default {
           icon: "i-Ambulance",
           route: "/app/delta-dental",
         },
-        {
-          id: 7,
-          title: "Patients",
-          icon: "i-Checked-User",
-          route: "/app/patients",
-        },
       ],
-      selectedDate: new Date(),
-      searchPatientText: "",
+      dateSelected: new Date(),
+      headerSearch: "",
       appointmentData: {
-        searchPatientText: "",
+        headerSearch: "",
         selectedTime: moment().format("HH:MM:ss"),
         selectedDate: new Date(2018, 7, 1),
-      },
-      patientData: {
-        name: "",
-        dob: "",
-        selectedTime: moment().format("HH:MM:ss"),
-        selectedDate: new Date(),
       },
       options2: [
         { value: "1", text: "aa" + " - " + "1" },
@@ -283,7 +218,7 @@ export default {
       cloudBase: {
         clinic: "Cloud Based...",
         clinics: ["Cloud Based...", "Clinic1", "Clinic2", "Clinic3"],
-        location: null,
+        location: 'null',
         locations: [
           { text: "Select Location", value: null },
           "USD",
@@ -294,6 +229,21 @@ export default {
       },
     };
   },
+  mounted() {
+    // this.setLocations();
+  },
+  watch: {
+    getSelectedLocation(val) {
+      if (val) {
+        this.location = val.id;
+      }
+    },
+    location(val) {
+      if (val) {
+        this.setSelectedLocation(val);
+      }
+    },
+  },
   methods: {
     ...mapActions([
       "signOut",
@@ -302,29 +252,9 @@ export default {
       "removeSidebarCompact",
       "mobileSidebar",
       "setAppointmentData",
-      "setPatientData",
-      "setActiveTabInPatientForm",
+      "setLocations",
+      "setSelectedLocation",
     ]),
-    searchPatient(e) {
-      const searchInput = e.target.value;
-      let searchResult = [];
-      if (searchInput) {
-        const value =
-          searchInput.charAt(0).toUpperCase() + searchInput.slice(1);
-        searchResult = this.patientsList.filter((patient) => {
-          return (
-            patient.first_name.indexOf(value) > -1 ||
-            patient.last_name.indexOf(value) > -1
-          );
-        });
-      } else {
-        searchResult = [];
-      }
-      this.searchPatients = searchResult;
-    },
-    resetSearchText() {
-      this.searchPatientText = "";
-    },
     openAppointmentModal() {
       this.setAppointmentData({
         headerSearch: "",
@@ -332,17 +262,6 @@ export default {
         selectedDate: new Date(),
       });
       this.$bvModal.show("new-appointment");
-    },
-    openNewPatientModal() {
-      this.setPatientData({
-        first_name: "",
-        last_name: "",
-        gender: "",
-        dob: null,
-        id: null,
-      });
-      this.setActiveTabInPatientForm("contact");
-      this.$root.$emit("bv::toggle::collapse", "sidebar-right");
     },
     handleFullScreen() {
       Util.toggleFullScreen();
@@ -357,13 +276,53 @@ export default {
     toggleMegaMenu() {
       this.isMegaMenuOpen = !this.isMegaMenuOpen;
     },
-  },
-  mounted() {
-    this.patientsList = this.getPatientsList;
-  },
-  watch: {
-    // dateSelected(val){
-    // }
+    runCron() {
+      if (this.isloading) return;
+
+      this.isloading = true;
+
+      axios
+        .get("insurance-claims/batch-run/")
+        .then((response) => {
+          console.log("resp: ", response);
+          this.makeToast("success", "Cron job ran successfully.");
+          this.isloading = false;
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        })
+        .catch((error) => {
+          console.log("error: ", error);
+          this.makeToast("danger", "Error running cron job.");
+          this.isloading = false;
+        });
+    },
+    confirmationPopup() {
+      return this.$swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, run it!",
+      });
+    },
+    makeToast(variant = null, msg) {
+      this.$bvToast.toast(msg, {
+        title: `${variant || "Default"}`,
+        variant: variant,
+        solid: true,
+      });
+    },
   },
 };
-</script>>
+</script>
+
+<style scoped>
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>

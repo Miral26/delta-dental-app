@@ -4,7 +4,6 @@
       <div class="wrapper">
         <vue-good-table
           :columns="columns"
-          :line-numbers="true"
           :search-options="{
             enabled: true,
             placeholder: 'Search',
@@ -13,6 +12,8 @@
           :pagination-options="{
             enabled: true,
             mode: 'records',
+            perPage: 50,
+            perPageDropdown: [50, 100, 500]
           }"
           styleClass="tableOne vgt-table"
           :selectOptions="{
@@ -51,7 +52,7 @@
                   "
                 ></i>
               </a>
-              <a
+              <!-- <a
                 v-b-tooltip.hover
                 class="o-hidden d-inline-block c-pointer"
                 title="Delete"
@@ -64,17 +65,51 @@
                     })
                   "
                 ></i>
+              </a> -->
+            </span>
+            <span v-else-if="props.column.field == 'subscriber'">
+              <a class="o-hidden d-inline-block">
+                <b-button
+                  size="sm"
+                  class="btn-radius"
+                  variant="primary"
+                  @click="
+                    () => {
+                      setPatientData(props.row);
+                      $bvModal.show('subscriber-info-view');
+                    }
+                  "
+                >
+                  View
+                </b-button>
+              </a>
+            </span>
+            <span v-else-if="props.column.field == 'location'">
+              <a class="o-hidden d-inline-block">
+                <b-button
+                  size="sm"
+                  class="btn-radius"
+                  variant="primary"
+                  @click="
+                    () => {
+                      setPatientData(props.row);
+                      $bvModal.show('home-office-view');
+                    }
+                  "
+                >
+                  View
+                </b-button>
               </a>
             </span>
             <span v-else-if="props.column.field == 'customer_card'">
-              <a class="o-hidden d-inline-block">
+              <a class="o-hidden d-inline-block" v-if="props.row.cards && props.row.cards.length < 1">
                 <b-button
                   size="sm"
                   class="btn-radius mr-2"
                   variant="primary"
                   @click="
                     () => {
-                      setRecord(props.row);
+                      setPatientData(props.row);
                       $bvModal.show('patient-card-add');
                     }
                   "
@@ -84,7 +119,7 @@
               </a>
               <a
                 class="o-hidden d-inline-block"
-                v-if="props.row.customer_card && props.row.customer_card.length"
+                v-if="props.row.cards && props.row.cards.length"
               >
                 <b-button
                   size="sm"
@@ -92,7 +127,7 @@
                   variant="primary"
                   @click="
                     () => {
-                      setRecord(props.row);
+                      setPatientData(props.row);
                       $bvModal.show('patient-card-view');
                     }
                   "
@@ -124,12 +159,28 @@ export default {
           field: "full_name",
         },
         {
-          label: "Email",
-          field: "email_address",
+          label: "Date of Birth",
+          field: "date_of_birth",
         },
         {
           label: "Phone",
-          field: "phone",
+          field: "phone_number",
+        },
+        {
+          label: "Email",
+          field: "email",
+        },
+        {
+          label: "Home Office",
+          field: "location",
+        },
+        {
+          label: "Group #",
+          field: "group_id",
+        },
+        {
+          label: "Subscriber Info",
+          field: "subscriber",
         },
         {
           label: "Customer Card",
@@ -142,13 +193,16 @@ export default {
       ],
     };
   },
+  mounted() {
+    console.log(`this.patients ===>`, this.patients);
+  },
   computed: mapGetters(["getPatients"]),
   methods: {
     ...mapActions([
       "savePatient",
       "updatePatient",
       "removePatient",
-      "setRecord",
+      "setPatientData",
       "setDefaultPatientForm",
       "setPatientForm",
     ]),

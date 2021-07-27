@@ -13,8 +13,8 @@
             :style="{ backgroundImage: 'url(' + signInImage + ')' }"
           >
             <div class="pl-3 auth-right">
-              <div class="auth-logo text-center mt-4 c-pointer">
-                <img :src="logo" alt="" @click="$router.push('/')" />
+              <div class="auth-logo text-center mt-4">
+                <img :src="logo" alt="" />
               </div>
               <div class="flex-grow-1"></div>
               <div class="w-100 mb-30">
@@ -32,7 +32,7 @@
                 >
                   <i class="i-Mail-with-At-Sign"></i> Sign in with Email
                 </router-link>
-                <a
+                <!-- <a
                   class="
                     btn
                     btn-outline-primary
@@ -55,7 +55,7 @@
                   "
                 >
                   <i class="i-Facebook-2"></i> Sign in with Facebook
-                </a>
+                </a> -->
               </div>
               <div class="flex-grow-1"></div>
             </div>
@@ -231,32 +231,35 @@ export default {
     //   validate form
     submit() {
       this.$v.$touch();
-      if (this.$v.$invalid) {
-        this.submitStatus = "ERROR";
-      } else {
-        signUp({
-          first_name: this.fName,
-          last_name: this.lName,
-          email: this.email,
-          password1: this.password,
-          password2: this.repeatPassword,
-        })
-          .then((resp) => {
-            console.log(`resp`, resp);
-            console.log(`resp.response`, resp.response);
-            if (resp && resp.status === 200) {
-              this.makeToast("success", resp.data.message);
+      if (this.$v.$invalid) return (this.submitStatus = "ERROR");
+
+      if (!this.checkEmailDomain(this.email))
+        return this.makeToast("danger", "Invalid credentials");
+
+      signUp({
+        first_name: this.fName,
+        last_name: this.lName,
+        email: this.email,
+        password1: this.password,
+        password2: this.repeatPassword,
+      })
+        .then((resp) => {
+          console.log("resp: ", resp);
+          if (resp && resp.status === 200) {
+            this.makeToast("success", resp.data.message);
+            setTimeout(() => {
               this.$router.push("/signIn");
-            }
-          })
-          .catch((err) => {
-            if (err && err.response && err.response.data) {
-              localStorage.removeItem("userInfo"); // if the request fails, remove any possible user token if possible
-              this.makeToast("danger", JSON.stringify(err.response.data));
-            }
+            }, 1000);
+          }
+        })
+        .catch((err) => {
+          if (err && err.response && err.response.data) {
             localStorage.removeItem("userInfo"); // if the request fails, remove any possible user token if possible
-          });
-      }
+            this.makeToast("danger", JSON.stringify(err.response.data));
+          }
+
+          localStorage.removeItem("userInfo"); // if the request fails, remove any possible user token if possible
+        });
     },
     makeToast(variant = null, msg = "Please fill the form correctly.") {
       this.$bvToast.toast(msg, {
@@ -275,6 +278,17 @@ export default {
 
     inputSubmit() {
       console.log("submitted");
+    },
+
+    checkEmailDomain(email) {
+      if (
+        process.env.VUE_APP_ALLOWED_DOMAINS.split(",").includes(
+          email.split("@")[1]
+        )
+      )
+        return true;
+
+      return false;
     },
   },
 };

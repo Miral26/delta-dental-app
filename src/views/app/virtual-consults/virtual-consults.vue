@@ -1,5 +1,5 @@
 <template>
-  <div class="main-content appointment-calender mx-auto" v-if="!getLoading">
+  <div class="main-content appointment-calender mx-auto">
     <b-card>
       <div class="row">
         <div class="col-md-5">
@@ -55,7 +55,6 @@
       </div>
     </b-card>
   </div>
-  <Loader v-else />
 </template>
 <style>
 .appointment-calender {
@@ -224,8 +223,6 @@
 <script>
 import { DatePicker } from "v-calendar";
 import * as moment from "moment";
-import Loader from "../../../components/loader/loader";
-import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -243,10 +240,6 @@ export default {
   },
   components: {
     DatePicker,
-    Loader,
-  },
-  computed: {
-    ...mapGetters(["getLoading"]),
   },
   methods: {
     myDayFormat(e) {

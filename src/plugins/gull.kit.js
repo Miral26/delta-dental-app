@@ -17,7 +17,6 @@ import "@/assets/styles/sass/themes/lite-purple.scss";
 import "@/plugins/echarts";
 import "@/plugins/apexChart.js";
 import "@/plugins/sweetalert2.js";
-import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css";
 import "v2-datepicker/lib/index.css"; // v2 need to improt css
 import V2Datepicker from "v2-datepicker";
@@ -72,7 +71,7 @@ export default {
       // The `import` function returns a Promise.
       // () => import("../containers/layouts/verticalSidebarTwo")
     );
-    Vue.component( "customizer", customer );
+    Vue.component("customizer", customer);
     Vue.component("vue-perfect-scrollbar", VuePerfectScrollbar);
     // Vue.component("vue-perfect-scrollbar", () =>
     //   import("vue-perfect-scrollbar")

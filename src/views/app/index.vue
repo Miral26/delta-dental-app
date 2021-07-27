@@ -19,6 +19,11 @@ export default {
   computed: {
     ...mapGetters(["getThemeMode"])
   },
-  methods: {}
+  methods: {
+    ...mapActions(["getUser"])
+  },
+  mounted() {
+    this.getUser();
+  }
 };
 </script>
