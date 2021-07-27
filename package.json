@@ -9,7 +9,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "npm run copy-prod && node server.js",
+    "start": "node server.js",
     "start-staging": "npm run copy-staging && npm run serve",
     "start-prod": "npm run copy-prod && npm run serve",
     "start-preprod": "npm run copy-preprod && npm run serve",
