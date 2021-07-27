@@ -1,4 +1,3 @@
-import axios from "axios";
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -6,24 +5,27 @@ export default {
   state: {
     loggedInUser:
       localStorage.getItem("userInfo") != null
-        ? JSON.parse(localStorage.getItem("userInfo")).authenticatedUser
+        ? JSON.parse(localStorage.getItem("userInfo"))
         : null,
     loading: false,
-    error: null,
+    error: null
   },
   getters: {
-    loggedInUser: (state) => state.loggedInUser,
-    loading: (state) => state.loading,
-    error: (state) => state.error,
+    loggedInUser: state => state.loggedInUser,
+    loading: state => state.loading,
+    error: state => state.error
   },
   mutations: {
-    SET_USER(state, data) {
+    setUser(state, data) {
       state.loggedInUser = data;
+      state.loading = false;
+      state.error = null;
     },
     setLogout(state) {
       state.loggedInUser = null;
       state.loading = false;
       state.error = null;
+      // this.$router.go("/");
     },
     setLoading(state, data) {
       state.loading = data;
@@ -36,35 +38,75 @@ export default {
     },
     clearError(state) {
       state.error = null;
-    },
+    }
   },
   actions: {
-    setUser({ commit }, data) {
-      commit("SET_USER", data);
-    },
-    getUser({ commit }) {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      if (userInfo.access && userInfo.refresh) {
-        commit("SET_USER", userInfo);
-        axios.defaults.headers.common["Authorization"] =
-          "JWT " + userInfo.access;
-      }
-    },
     login({ commit }, data) {
-      axios
-        .post("auth/login/", data)
-        .then((response) => console.log("resp: ", response))
-        .catch((error) => console.log("error: ", error.response));
+      commit("clearError");
+      commit("setLoading", true);
+      if (data.email === 'devin@gmail.com' && data.password === "devin@123") {
+        const newUser = { uid: "123" };
+        localStorage.setItem("userInfo", JSON.stringify(newUser));
+        commit("setUser", { uid: "123" });
+        console.log("user");
+      } else {
+        localStorage.removeItem("userInfo");
+        commit("setError", "Invalid Credentials");
+      }
+      // firebase
+      //   .auth()
+      //   .signInWithEmailAndPassword(data.email, data.password)
+      //   .then(user => {
+      //     const newUser = { uid: user.user.uid };
+      //     localStorage.setItem("userInfo", JSON.stringify(newUser));
+      //     commit("setUser", { uid: user.user.uid });
+      //     console.log("user");
+      //   })
+      //   .catch(function (error) {
+      //     // Handle Errors here.
+      //     // var errorCode = error.code;
+      //     // var errorMessage = error.message;
+      //     // console.log(error);
+      //     localStorage.removeItem("userInfo");
+      //     commit("setError", error);
+      //     // ...
+      //   });
+    },
+
+    signUserUp({ commit }, data) {
+      commit("setLoading", true);
+      commit("clearError");
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(data.email, data.password)
+        .then(user => {
+          commit("setLoading", false);
+
+          const newUser = {
+            uid: user.user.uid
+          };
+          console.log(newUser);
+          localStorage.setItem("userInfo", JSON.stringify(newUser));
+          commit("setUser", newUser);
+        })
+        .catch(error => {
+          commit("setLoading", false);
+          commit("setError", error);
+          localStorage.removeItem("userInfo");
+          console.log(error);
+        });
     },
     signOut({ commit }) {
       firebase
         .auth()
         .signOut()
-        .then(() => {
-          localStorage.removeItem("userInfo");
-          commit("setLogout");
-        });
-    },
-  },
+        .then(
+          () => {
+            localStorage.removeItem("userInfo");
+            commit("setLogout");
+          },
+          _error => { }
+        );
+    }
+  }
 };

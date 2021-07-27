@@ -2,13 +2,20 @@ import Vuex from "vuex";
 import Vue from "vue";
 import largeSidebar from "./modules/largeSidebar";
 import compactSidebar from "./modules/compactSidebar";
+import chat from "./modules/chat";
 import config from "./modules/config";
 import authData from "./modules/authData";
-import claim from "./modules/claim";
+import invoice from "./modules/invoice";
+import operatories from "./modules/operatories";
+import deltaDental from "./modules/delta-dental";
+import cart from "./modules/cart";
 import verticalSidebar from "./modules/verticalSidebar";
-import location from "./modules/location";
+import scrumboard from "./modules/scrumboard";
+import appointment from "./modules/appointment";
+import appointmentProgress from "./modules/appointment-progress";
 import patient from "./modules/patient";
-import card from "./modules/card";
+import loader from "./modules/loader";
+
 
 // Load Vuex
 Vue.use(Vuex);
@@ -18,12 +25,18 @@ export default new Vuex.Store({
   modules: {
     largeSidebar,
     compactSidebar,
+    chat,
     config,
     authData,
+    invoice,
+    cart,
     verticalSidebar,
-    claim,
-    location,
+    scrumboard,
+    appointment,
+    appointmentProgress,
     patient,
-    card,
-  },
+    operatories,
+    deltaDental,
+    loader
+  }
 });

@@ -214,6 +214,41 @@
       }
     }
   }
+  .search-patient-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    box-shadow: 0 4px 5px rgba(0,0,0,0.2);
+    ul {
+      padding: 0;
+      margin: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      li {
+        list-style: none;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+  .search-patient-detail {
+    span {
+      &:last-child {
+        text-align: right;
+      }
+      width: 50%;
+      float: left;
+      padding: 0 10px;
+    }
+    display: flex;
+    margin: 0 -10px;
+  }
+  
 }
 
 @media (max-width: 991px) {

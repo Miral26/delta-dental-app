@@ -1,6 +1,7 @@
 .layout-sidebar-vertical{
 .vertical-header {
     position: relative!important;
+    z-index: 1001;
 }
 .menu-toggle.vertical-toggle {
     display: none!important;

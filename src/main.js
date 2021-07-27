@@ -20,10 +20,6 @@ import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 //import material-icon scss
 import "font-awesome/css/font-awesome.min.css";
 
-import 'vue-select/dist/vue-select.css';
-import vSelect from 'vue-select'
-Vue.component('v-select', vSelect)
-
 //defined as global component
 Vue.component('VueFontawesome', require('vue-fontawesome-icon/VueFontawesome.vue').default);
 

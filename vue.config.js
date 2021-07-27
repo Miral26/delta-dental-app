@@ -14,7 +14,7 @@ module.exports = {
     contentBase: "dist",
     compress: true,
     open: true,
-    overlay: {warnings: false, errors: true},
+    overlay: { warnings: false, errors: true },
     publicPath: "/",
     quiet: true,
     watchOptions: {
@@ -41,9 +41,16 @@ module.exports = {
   //     ])
   //   ]
   // },
-
+  // configureWebpack: {
+  //   resolve: {
+  //     alias: {
+  //       'vue$': 'vue/dist/vue.esm.js'
+  //     }
+  //   }
+  // },
   lintOnSave: false,
   pluginOptions: {},
 
-  transpileDependencies: ["vue-echarts", "resize-detector"]
+  transpileDependencies: ["vue-echarts", "resize-detector"],
+  runtimeCompiler: true
 };

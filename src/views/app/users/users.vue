@@ -1,12 +1,6 @@
 <template>
-  <div class="main-content">
-    <div class="d-flex justify-content-between">
-      <div class="d-flex align-items-center mb-4">
-        <div class="mr-3 page-title">
-          <h3 class="font-weight-bold m-0">Users</h3>
-        </div>
-      </div>
-    </div>
+  <div class="main-content" v-if="!getLoading">
+    <breadcumb :page="'User List'" :folder="'App'" />
 
     <b-row>
       <b-col md="12">
@@ -101,31 +95,19 @@
                       <b-list-group flush>
                         <b-list-group-item
                           button
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                          "
+                          class="d-flex justify-content-between align-items-center"
                           >Cras justo odio</b-list-group-item
                         >
 
                         <b-list-group-item
                           button
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                          "
+                          class="d-flex justify-content-between align-items-center"
                           >Dapibus ac facilisis in</b-list-group-item
                         >
 
                         <b-list-group-item
                           button
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-center
-                          "
+                          class="d-flex justify-content-between align-items-center"
                           >Morbi leo risus</b-list-group-item
                         >
                       </b-list-group>
@@ -138,13 +120,7 @@
                     <div class="navbar-header clearfix">
                       <i
                         @click="openMenu"
-                        class="
-                          nav-icon
-                          i-Align-Justify-All
-                          text-25
-                          ul-contact-mobile-icon
-                          float-left
-                        "
+                        class="nav-icon i-Align-Justify-All text-25 ul-contact-mobile-icon float-left"
                       ></i>
                     </div>
                     <vue-good-table
@@ -194,13 +170,7 @@
                               @click="editContactlist(props.row)"
                             >
                               <i
-                                class="
-                                  nav-icon
-                                  i-Pen-2
-                                  text-success
-                                  font-weight-bold
-                                  mr-2
-                                "
+                                class="nav-icon i-Pen-2 text-success font-weight-bold mr-2"
                               ></i>
                               Edit
                             </b-dropdown-item>
@@ -209,13 +179,7 @@
                               @click="deleteUserList(props.index)"
                             >
                               <i
-                                class="
-                                  nav-icon
-                                  i-Close-Window
-                                  text-danger
-                                  font-weight-bold
-                                  mr-2
-                                "
+                                class="nav-icon i-Close-Window text-danger font-weight-bold mr-2"
                               ></i>
                               Delete
                             </b-dropdown-item>
@@ -281,8 +245,11 @@
       </b-col>
     </b-row>
   </div>
+  <Loader v-else />
 </template>
 <script>
+import { mapActions, mapGetters } from "vuex";
+import Loader from "../../../components/loader/loader";
 export default {
   data() {
     return {
@@ -323,7 +290,8 @@ export default {
         {
           id: 1,
 
-          name: "Wireless Bluetooth V4.0 Portable Speaker with HD Sound and Bass",
+          name:
+            "Wireless Bluetooth V4.0 Portable Speaker with HD Sound and Bass",
           email: "dprice@msn.com",
           permissionLevel: "P3",
         },
@@ -344,7 +312,8 @@ export default {
         {
           id: 4,
 
-          name: "Automatic-self-wind mens Watch 5102PR-001 (Certified Pre-owned)",
+          name:
+            "Automatic-self-wind mens Watch 5102PR-001 (Certified Pre-owned)",
           email: "dunstan@att.net.",
           permissionLevel: "P2",
         },
@@ -386,14 +355,16 @@ export default {
         {
           id: 10,
 
-          name: "Over-Ear Headphones, Stereo Lightweight Adjustable Wired Headset",
+          name:
+            "Over-Ear Headphones, Stereo Lightweight Adjustable Wired Headset",
           email: "engelen@outlook.com",
           permissionLevel: "P1",
         },
         {
           id: 11,
 
-          name: "Wireless Bluetooth V4.0 Portable Speaker with HD Sound and Bass",
+          name:
+            "Wireless Bluetooth V4.0 Portable Speaker with HD Sound and Bass",
           email: "wildfire@yahoo.com",
           permissionLevel: "P2",
         },
@@ -407,7 +378,11 @@ export default {
       ],
     };
   },
+  components: {
+    Loader,
+  },
   computed: {
+    ...mapGetters(["getLoading"]),
     filterIcons() {
       return this.rows.filter(() => {
         return this.contactListFilter
@@ -416,7 +391,14 @@ export default {
       });
     },
   },
+  mounted() {
+    this.setLoading(true);
+    setTimeout(() => {
+      this.setLoading(false);
+    }, 2000);
+  },
   methods: {
+    ...mapActions(["setLoading"]),
     openMenu() {
       this.isCLoseMenu = !this.isCLoseMenu;
     },

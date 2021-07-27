@@ -16,6 +16,9 @@
 @import "footer";
 @import "utilities/utilities";
 @import "views/views";
+@import "views/schedule";
+@import "views/new_appointment_modal";
+@import "views/appointment-progress.scss";
 
 html {
   font-size: 16px;
@@ -244,7 +247,9 @@ blockquote {
     }
   }
 }
-
+.text-primary {
+  color: #6cdcd4 !important
+}
 .form-control {
   background-color: transparent;
 }
@@ -272,7 +277,26 @@ blockquote {
   padding-top: 6px;
   padding-bottom: 6px;
 }
-
+.dropdown-toggle::after {
+  content: "\f107";
+  font-family: "FontAwesome";
+  border: 0;
+  position: absolute;
+  right: 10px;
+  width: auto;
+  height: auto;
+  top: 50%;
+  font-size: 20px;
+  color: #05070b;
+  font-weight: bold;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 9;
+}
+.btn:focus,.btn:hover {
+  box-shadow: none !important;
+}
 .billing-dropdown li .dropdown,
 .billing-dropdown li .dropdown-toggle {
   width: 100% !important;
@@ -310,7 +334,6 @@ blockquote {
   padding: 10px 30px !important;
   line-height: normal;
 }
-
 .main-header .header-part-right .datepicker-input button:hover {
   background-color: #6cdcd4;
 }
@@ -398,92 +421,108 @@ blockquote {
     background-color: transparent;
   }
 
-.default-timepicker {
-  .b-time-header {
-    display: none;
-  }
-  .b-time-footer {
-    display: none;
-  }
-  &.show-header {
-    .b-time-header {
-      display: block;
-    }
-  }
-  &.show-footer {
-    .b-time-footer {
-      display: block;
-    }
-  }
-  .dropdown-menu {
-    .b-time {
-      background-color: #fff;
-    }
-    box-shadow: none;
-    background-color: transparent;
-  }
-  .b-form-spinbutton {
-    padding: 10px 7px;
-    &.focus {
+  .table-list {
+    .vgt-inner-wrap {
       box-shadow: none;
-      border-color: #6cdcd4;
     }
-    .btn {
-      padding: 5px 5px;
+    .vgt-global-search.vgt-clearfix,
+    table.tableOne.vgt-table thead tr th,
+    table.vgt-table td,
+    table.vgt-table,
+    table.tableOne tbody tr th.line-numbers,
+    div.vgt-wrap__footer.vgt-clearfix {
+        background: transparent;
     }
   }
-}
-.default-timepicker.b-form-timepicker {
-  >.btn {
-    opacity: 0;
-    visibility: hidden;
-    padding: 0;
-    width: 0;
+  .default-timepicker {
+    .b-time-header {
+      display: none;
+    }
+    .b-time-footer {
+      display: none;
+    }
+    &.show-header {
+      .b-time-header {
+        display: block;
+      }
+    }
+    &.show-footer {
+      .b-time-footer {
+        display: block;
+      }
+    }
+    .dropdown-menu {
+      .b-time {
+        background-color: #fff;
+      }
+      box-shadow: none;
+      background-color: transparent;
+    }
+    .b-form-spinbutton {
+      padding: 10px 7px;
+      &.focus {
+        box-shadow: none;
+        border-color: #6cdcd4;
+      }
+      .btn {
+        padding: 5px 5px;
+      }
+    }
   }
-} 
-.default-dropdown.b-dropdown,
-.default-dropdown.b-dropdown .btn {
-  width: 100%;
-  text-align: left;
-}
-.default-dropdown ul.dropdown-menu {
-  min-width: auto;
-  width: 100%;
-}
-.default-dropdown .btn-secondary:focus {
-  box-shadow: none !important; 
-  -webkit-box-shadow: none !important
-}
-
-.table-list {
-  .vgt-inner-wrap {
-    box-shadow: none;
+  .default-timepicker.b-form-timepicker {
+    >.btn {
+      opacity: 0;
+      visibility: hidden;
+      padding: 0;
+      width: 0;
+    }
+  } 
+  #add-location,
+  #location-hours {
+    .modal-body {
+      padding: 0;
+    }
   }
-  .vgt-global-search.vgt-clearfix,
-  table.tableOne.vgt-table thead tr th,
-  table.vgt-table td,
-  table.vgt-table,
-  table.tableOne tbody tr th.line-numbers,
-  div.vgt-wrap__footer.vgt-clearfix {
-      background: transparent;
+  .state-dropdown {
+    width: 100%;
   }
-}
-@keyframes spinner {
-  to {transform: rotate(360deg);}
-}
- 
-.spinner:before {
-  content: '';
-  box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin-top: -10px;
-  margin-left: -10px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  border-top-color: #4a4949;
-  animation: spinner .6s linear infinite;
-}
+  .state-dropdown button {
+      width: 100%;
+      text-align: left;
+  }
+  .e-quick-popup-wrapper {
+    .e-input-group:not(.e-float-icon-left):not(.e-float-input)::before, .e-input-group:not(.e-float-icon-left):not(.e-float-input)::after, .e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before, .e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after, .e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::before, .e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::after, .e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before, .e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after,
+    input.e-input::selection, textarea.e-input::selection, .e-input-group input.e-input::selection, .e-input-group.e-control-wrapper input.e-input::selection, .e-float-input input::selection, .e-float-input.e-control-wrapper input::selection, .e-input-group textarea.e-input::selection, .e-input-group.e-control-wrapper textarea.e-input::selection, .e-float-input textarea::selection, .e-float-input.e-control-wrapper textarea::selection {
+      background: #35cfc3;
+    }
+    .e-time-wrapper .e-input-group-icon.e-icons.e-active {
+      color: #35cfc3 !important;
+    }
+  }
+  .e-dropdownbase .e-list-item.e-active,.e-dropdownbase .e-list-item.e-active.e-hover,
+  .e-timepicker.e-popup .e-list-parent.e-ul .e-list-item.e-active {
+    color: #35cfc3 !important;
+  }
+  .e-btn.e-flat.e-primary:focus, .e-css.e-btn.e-flat.e-primary:focus {
+    color: #35cfc3 !important;
+    background-color: #e5f4f8 !important;
+  }
+  @keyframes spinner {
+    to {transform: rotate(360deg);}
+  }
+   
+  .spinner:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-top-color: #4a4949;
+    animation: spinner .6s linear infinite;
+  }

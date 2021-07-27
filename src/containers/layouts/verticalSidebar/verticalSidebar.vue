@@ -61,6 +61,64 @@
       </div>
 
       <div class="sidenav-bottom">
+        <!-- <ul class="ul-vertical-sidebar pl-4 mb-0" id="menu">
+          <li class="hover-menu hover-dropdown">
+            <div v-b-toggle.collapse-3>
+              <a
+                class="has-arrow"
+                href="#"
+                :class="{ active: selectedParentMenu == 'settings' }"
+              >
+                <i class="i-Globe text-23 mr-2 icon font-weight-bold"></i>
+                <span
+                  class="text-15"
+                  :class="{
+                    'vertical-item-name': getVerticalCompact.isItemName,
+                  }"
+                  >Settings</span
+                >
+              </a>
+            </div>
+            <b-collapse id="collapse-3">
+              <ul
+                class="Ul_collapse"
+                :class="{ 'vertical-item-name': getVerticalCompact.isItemName }"
+              >
+                <li class="item-name">
+                  <router-link tag="a" to="/app/schedule-template">
+                    <span class>Schedule Template</span>
+                  </router-link>
+                </li>
+                <li class="item-name">
+                  <router-link tag="a" to="/app/virtual-consults">
+                    <span class>Virtual-Consults</span>
+                  </router-link>
+                </li>
+                <li class="item-name">
+                  <router-link tag="a" to="/app/users">
+                    <span class>Users</span>
+                  </router-link>
+                </li>
+                <li class="item-name">
+                  <router-link tag="a" to="/app/locations">
+                    <span class>Locations</span>
+                  </router-link>
+                </li>
+                <li class="item-name">
+                  <router-link tag="a" to="/app/location-hours">
+                    <span class>Location Hours</span>
+                  </router-link>
+                </li>
+                <li class="item-name">
+                  <router-link tag="a" to="/app/operatories">
+                    <span class>Operatories</span>
+                  </router-link>
+                </li>
+              </ul>
+            </b-collapse>
+          </li>
+        </ul> -->
+
         <div class="dropdown">
           <b-dropdown
             id="dropdown-1"
@@ -73,25 +131,22 @@
           >
             <template slot="button-content">
               <img
-                src="@/assets/images/faces/0.png"
+                src="@/assets/images/faces/1.jpg"
                 id="userDropdown"
                 alt
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               />
-              <span>{{
-                (loggedInUser && loggedInUser.full_name) || "Guest"
-              }}</span>
+              <span>{{loggedInUser && loggedInUser.full_name || 'Guest'}}</span>
               <i class="i-Arrow-Down"></i>
             </template>
 
             <div class="dropdown-menu-right" aria-labelledby="userDropdown">
               <div class="dropdown-header">
-                {{ (loggedInUser && loggedInUser.full_name) || "Guest" }}
+                <i class="i-Lock-User mr-1"></i> {{loggedInUser && loggedInUser.full_name || 'Guest'}}
               </div>
-              <!-- <a class="dropdown-item">Profile Update</a>
-              <a class="dropdown-item">Change Password</a> -->
+              <a class="dropdown-item">Change Password</a>
               <a class="dropdown-item" href="#" @click.prevent="logoutUser"
                 >Sign out</a
               >
@@ -114,40 +169,39 @@ export default {
       selectedParentMenu: "",
       sideMenu: [
         {
-          title: "Claims",
-          selectedParentMenu: "claims",
+          title: "Schedule",
+          selectedParentMenu: "schedule",
           icon: "i-Calendar-4",
-          redirectTo: "/app/claims",
+          redirectTo: "/app/schedule",
         },
         {
-          title: "Payments",
-          selectedParentMenu: "payments",
-          icon: "i-Money-2",
-          redirectTo: "/app/payments",
+          title: "Daily Huddle",
+          selectedParentMenu: "daily-huddle",
+          icon: "i-Home1",
+          redirectTo: "/app/daily-huddle",
         },
         {
-          title: "Patients",
-          selectedParentMenu: "patients",
-          icon: "i-Checked-User",
-          redirectTo: "/app/patients",
+          title: "Report",
+          selectedParentMenu: "report",
+          icon: "i-File-TXT",
+          redirectTo: "/app/report",
         },
         {
-          title: "Users",
-          selectedParentMenu: "users",
-          icon: "i-Love-User",
-          redirectTo: "/app/users",
+          title: "Billings",
+          selectedParentMenu: "billings",
+          icon: "i-Dollar-Sign-2",
+          redirectTo: "/app/billings",
         },
-        {
-          title: "Insights",
-          selectedParentMenu: "insights",
-          icon: "i-Bar-Chart",
-          redirectTo: "/app/insights",
-        },
+        // {
+        //   title: "Overview",
+        //   selectedParentMenu: "overview",
+        //   icon: "i-Bar-Chart",
+        //   redirectTo: "/app/overview",
+        // },
       ],
     };
   },
   mounted() {
-    // console.log(`this.loggedInUser`, this.loggedInUser);
     this.toggleSelectedParentMenu();
     document.addEventListener("click", this.returnSelectedParentMenu);
   },
@@ -180,7 +234,7 @@ export default {
       this.signOut();
       setTimeout(() => {
         this.$router.push("/signIn");
-      }, 600);
+      }, 500);
     },
   },
 };

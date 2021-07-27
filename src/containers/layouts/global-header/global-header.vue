@@ -1,7 +1,7 @@
 <template>
   <div class="header-wrap">
     <div class="logo">
-      <img src="@/assets/images/new-logo.png" alt />
+      <img src="@/assets/images/logo.png" alt />
     </div>
 
     <div class="globle-header nav-bar">

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export async function getPatients(id) {
-    return axios.get(`patient/?page=1&limit=500`).then((result) => {
+export async function getPatients() {
+    return axios.get('patient/').then((result) => {
         if (result && result.status === 200) {
             return result.data
         }
